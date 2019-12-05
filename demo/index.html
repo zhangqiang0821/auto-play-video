@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>canvas-mp4</title>
+    <style type="text/css">
+      html,
+      body {
+        background-color: #fff;
+        text-align: center;
+        height: 100vh;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="video-canvas"></canvas>
+    <script type="text/javascript" src="jsmpeg.min.js"></script>
+    <script type="text/javascript">
+      var canvas = document.getElementById('video-canvas')
+      var url = 'demo.ts'
+      var player = new JSMpeg.Player(url, {
+        canvas: canvas,
+        loop: false,
+        autoplay: true,
+        audio: true,
+        disableGl: true,
+        disableWebAssembly: true,
+        progressive: false,
+        throttled: false,
+        onEnded: () => {
+          console.log('JSMpeg already end')
+        },
+        onSourceEstablished: function() {
+          console.log('ok')
+          player.play()
+        }
+      })
+      // player.audioOut.unlock(this.onUnlocked)
+      // player.play()
+
+      //  onUnlocked方法
+      // function onUnlocked() {
+      //   console.log('-----')
+      //   // player.volume = 1
+      // }
+
+      // 为统一用户交互即muted（静音）自动播放，Android系统下未使用chromium M71版本的webview仍不支持autoplay策略（浏览器市场占比较大）。
+      function toggleVolumn() {
+        // 如果是依据autoplay policy而消音
+        if (!player.audioOut.unlocked) {
+          // 解除消音
+          player.audioOut.unlock()
+          // 避免一些隐患手动设置volume
+          player.audioOut.volume = 1
+        } else {
+          player.volume = player.volume > 0 ? 0 : 1
+        }
+      }
+      document.querySelector('#video-canvas').addEventListener('click', toggleVolumn, true)
+    </script>
+  </body>
+</html>

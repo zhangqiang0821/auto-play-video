@@ -1,0 +1,1 @@
+ffmpeg -i demo.mp4 -f mpegts -codec:v mpeg1video -codec:a mp2 -b 0 demo.ts
